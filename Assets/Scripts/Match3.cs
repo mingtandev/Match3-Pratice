@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using UnityEngine;
@@ -10,19 +11,46 @@ public class Match3 : MonoBehaviour
 
     [Header("UI Element")]
     public Node[,] board;
+
     int width = 9;
     int height = 14;
     public ArrayLayout boardLayout;
     public Sprite[] pieces;
     public RectTransform gameBoard;
+
     [Header("Prefabs")]
     public GameObject nodePiece;
     System.Random random;
 
+    List<NodePiece> update;
 
     void Start()
     {
+        update = new List<NodePiece>();
+
         StartGame();
+    }
+
+
+    void Update()
+    {
+        List<NodePiece> finishedUpdating = new List<NodePiece>(); 
+        for(int i = 0; i < update.Count; i++)
+        {
+
+            NodePiece piece = update[i];
+            bool updating = piece.UpdatePiece();
+            if (!updating)
+            {
+                finishedUpdating.Add(update[i]);
+            }
+        }
+
+        for(int i = 0; i < finishedUpdating.Count; i++)
+        {
+            NodePiece piece = finishedUpdating[i];
+            update.Remove(piece);
+        }
     }
 
     void StartGame()
@@ -72,23 +100,52 @@ public class Match3 : MonoBehaviour
 
     void InstantiateBoard()
     {
-        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
         {
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
                 int val = board[x, y].value;
                 if (val <= 0) continue;
-
+                Node node = getNodeAtPoint(new Point(x,y));
                 GameObject p = Instantiate(nodePiece, gameBoard);
                 RectTransform rect = p.GetComponent<RectTransform>();
                 rect.anchoredPosition = new Vector2(32 + (64 * x), -32 - (64 * y));
 
                 //Component node quản lý giá trị tại mỗi node ( value ,index , spirte , ...)
-                NodePiece node = p.GetComponent<NodePiece>();
-                node.Initialize(val, new Point(x, y), pieces[val - 1]);
+                NodePiece piece = p.GetComponent<NodePiece>();
+                piece.Initialize(val, new Point(x, y), pieces[val - 1]);
 
+                node.SetPiece(piece);
             }
         }
+    }
+
+    public void FlipPieces(Point one , Point two)
+    {
+        if (getValueAtPoint(one) < 0)
+            return;
+
+        Node nodeOne = getNodeAtPoint(one);
+        NodePiece pieceOne = nodeOne.getPiece();
+
+        if (getValueAtPoint(two) > 0)
+        {
+            Node nodeTwo = getNodeAtPoint(two);
+            NodePiece pieceTwo = nodeTwo.getPiece();
+
+            nodeOne.SetPiece(pieceTwo);    //Đảo thuộc tính NodePiece cho nhau ,  => pos thay đổi , sau đó add vào update cho nó tự di chuyển về
+            nodeTwo.SetPiece(pieceOne);
+
+            //pieceOne.flipped = pieceTwo;
+            //pieceTwo.flipped = pieceOne;
+
+            update.Add(pieceOne);
+            update.Add(pieceTwo);
+
+        }
+        else
+            ResetPiece(pieceOne);
+
     }
     void setValueAtPoint(Point p , int val)
     {
@@ -189,12 +246,24 @@ public class Match3 : MonoBehaviour
         return val;
     }
 
-
-
-    void Update()
+    public Vector2 getPostionFromPoint(Point p)
     {
-        
+        return new Vector2(32 + (64 * p.x), -32 - (64 * p.y));
     }
+
+    public void ResetPiece(NodePiece piece)
+    {
+        piece.ResetPosition();   //Tra ve pos ban dau
+        //piece.flipped = null;
+        update.Add(piece);     // add piece vao de updating ve pos ban dau
+    }
+
+
+    Node getNodeAtPoint(Point p)
+    {
+        return board[p.x, p.y];
+    }
+ 
 }
 
 
@@ -203,10 +272,23 @@ public class Node
 {
     public int value; // 0 : blank , 1 : cube , 2 : sphere , 3 : cylinder , 4 : pryamid , 5 : diamond , -1 : hole
     public Point index;
-     
+    NodePiece piece;
     public Node(int v , Point i)
     {
         value = v;
         index = i;
+    }
+
+    public void SetPiece(NodePiece p)
+    {
+        piece = p;
+        value = (piece == null) ? 0 : piece.value;
+        if (piece == null) return;
+        piece.SetIndex(index);
+    }
+
+    public NodePiece getPiece()
+    {
+        return piece;
     }
 }

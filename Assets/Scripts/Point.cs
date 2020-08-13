@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class Point
 {
-        //Field : là thuộc tính luôn luôn ở mode private
-        //Quy tắc dặt tên field : camelCase
         public int x;
         public int y;
 
-        //Properties : là một phần mở rông của field(cũng đc hiểu như thuộc tính) , thông qua properties ta có thể thay đổi các field(để tiện validation)
-        //Quy tắc dặt tên Properties : PascalCase
         public Point(int nx, int ny)
         {
             x = nx;
