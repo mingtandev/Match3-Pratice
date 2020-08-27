@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Text.RegularExpressions;
+
 public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
 {
 
@@ -14,17 +16,14 @@ public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
     [HideInInspector]
     public Vector2 pos;
     [HideInInspector]
-    public NodePiece flipped;
-    [HideInInspector]
-    public RectTransform rect;
+    public RectTransform rect;   // real position
 
     Image img;
 
-    bool updating;
+    bool updating;    //When click , object will movement of back
     public void Initialize(int v , Point p , Sprite sp)
     {
 
-        flipped = null;
         img = GetComponent<Image>();
         rect = GetComponent<RectTransform>();
 
@@ -42,7 +41,7 @@ public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
 
     public void MovePositionTo(Vector2 move)
     {
-        rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, move, Time.deltaTime * 16f);
+        rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, move, Time.deltaTime * 6f);
     }
 
     public void ResetPosition()
@@ -83,6 +82,7 @@ public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         if (updating) return;
+        gameObject.GetComponent<Image>().sprite = FindObjectOfType<Match3>().piecesWakeUp[value - 1];
         MovingPiece.instance.MovePiece(this);
     }
 

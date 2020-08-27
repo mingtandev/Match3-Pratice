@@ -70,7 +70,7 @@ public class MovingPiece : MonoBehaviour
 
         if (!newIndex.Equal(moving.index))
         {
-            game.FlipPieces(moving.index, newIndex);
+            game.FlipPieces(moving.index, newIndex,true);
         }
         game.ResetPiece(moving);
         moving = null;

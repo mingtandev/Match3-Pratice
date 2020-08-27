@@ -59,6 +59,8 @@ sysinfo.txt
 *.aab
 *.unitypackage
 
+Flow data
+
 # Crashlytics generated file
 crashlytics-build.properties
 
