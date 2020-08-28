@@ -75,6 +75,8 @@ public class Match3 : MonoBehaviour
         //Khi update xong , đã có vị trí mới , loop dưới đây xử lý những piece đã update xong
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
+
+            List<List<Point>> list2Connect = new List<List<Point>>(2);
             NodePiece piece = finishedUpdating[i];
             NodePiece flippedPiece = null;
 
@@ -88,11 +90,28 @@ public class Match3 : MonoBehaviour
 
             bool isFlipped = (flipMaster != null);
 
+            //Initilize FX effect
+            //First : check at connect 1
+            int isGreate5_1 = connected.Count;
+            Point pConnect_1 = Point.PHightest(connected);
+            Point Pconnect_1_H = Point.PMostRight(connected);  //most right for horizontal 
+            bool isHorizontal_1 = Point.DirectOfListPoint(connected);
+
+            Point pConnect_2 = Point.zero;
+            Point pConnect_2_H = Point.zero;
+            int isGreate5_2 = 0;
+            bool isHorizontal_2 = true;
+
             //Nếu có flip thì lấy ra otherPiece flipped của piece hiện tại
             if (isFlipped)
             {
                 flippedPiece = flipMaster.getOtherPiece(piece);
-                AddPoints(ref connected, isConnected(flippedPiece.index, true));
+                List<Point> connected2 = isConnected(flippedPiece.index, true);
+                pConnect_2 = Point.PMostRight(connected2);
+                isGreate5_2 = connected2.Count;//check at connect 2
+                isHorizontal_2 = Point.DirectOfListPoint(connected2);
+
+                AddPoints(ref connected, connected2);
             }
 
             if (connected.Count == 0)  //Neu khong co match nao
@@ -105,30 +124,97 @@ public class Match3 : MonoBehaviour
             }
             else  // >0 ( =2  , =3 , ... )
             {
+
+                Debug.Log(Pconnect_1_H.x);
+                //_____________________________CREATE FX__________________________________-
+                bool isGreate4 = (connected.Count >= 4) ? true : false;
+                //Create FX if greate 5 pieces
+                if (isGreate5_1 >=5)
+                {
+
+                    //create FX
+                    //Get point highest (cuz long prefabs(pivot) set only for highest point)
+                    if (isHorizontal_1)  //if horizontal
+                    {
+                        GameObject longFX = InstaniateExpolsion(Pconnect_1_H.x, Pconnect_1_H.y, 8);
+                        RectTransform rectLong;
+                        rectLong = longFX.GetComponent<RectTransform>();
+                        rectLong.anchoredPosition = new Vector2(rectLong.anchoredPosition.x+16, rectLong.anchoredPosition.y);
+                        rectLong.sizeDelta = new Vector2((isGreate5_1 + 1) * 50f, rectLong.sizeDelta.y);
+                    }
+                    else  //vertical
+                    {
+                        GameObject longFX = InstaniateExpolsion(pConnect_1.x, pConnect_1.y, 7);
+                        RectTransform rectLong;
+                        rectLong = longFX.GetComponent<RectTransform>();
+                        rectLong.anchoredPosition = new Vector2(rectLong.anchoredPosition.x, rectLong.anchoredPosition.y - 16);
+                        rectLong.sizeDelta = new Vector2(rectLong.sizeDelta.x, (isGreate5_1+1) * 50f);
+                    }
+                    isGreate5_1 = 0;
+                }
+                if (isGreate5_2 >=5 )
+                {
+
+                    //create FX
+                    //Get point highest (cuz long prefabs(pivot) set only for highest point)
+                    if (isHorizontal_2)  //if horizontal
+                    {
+                        GameObject longFX = InstaniateExpolsion(pConnect_2_H.x, pConnect_2_H.y, 8);
+                        RectTransform rectLong;
+                        rectLong = longFX.GetComponent<RectTransform>();
+                        rectLong.anchoredPosition = new Vector2(rectLong.anchoredPosition.x+16, rectLong.anchoredPosition.y);
+                        rectLong.sizeDelta = new Vector2((isGreate5_2 + 1) * 50f, rectLong.sizeDelta.y);
+                    }
+                    else
+                    {
+                        GameObject longFX = InstaniateExpolsion(pConnect_2.x, pConnect_2.y, 7);
+                        RectTransform rectLong;
+                        rectLong = longFX.GetComponent<RectTransform>();
+                        rectLong.anchoredPosition = new Vector2(rectLong.anchoredPosition.x, rectLong.anchoredPosition.y - 16);
+                        rectLong.sizeDelta = new Vector2(rectLong.sizeDelta.x, (isGreate5_2+1) * 50f);
+                    }
+                    isGreate5_2 = 0;
+                }
+
+                //_________________________kill all piece connected____________________________
                 foreach (Point pnt in connected)
                 {
                     Node node = getNodeAtPoint(pnt);
                     NodePiece nodePiece = node.getPiece();
-                    GameObject exp = null;
 
+
+
+
+                    #region explosion effect
                     //create explosion
-                    exp = InstaniateExpolsion(pnt.x, pnt.y, nodePiece.value);
-                    
-                    
+                    GameObject exp = InstaniateExpolsion(pnt.x, pnt.y, nodePiece.value);
+
+                    //create fx at pnt have greate 4 connect
+                    if (isGreate4)
+                    {
+                        GameObject circleFX = InstaniateExpolsion(pnt.x, pnt.y, 6);
+                        isGreate4 = false;
+                    }
+
+                    #endregion
 
 
 
+
+                    //Kill pieces
                     if (nodePiece != null)
                     {
                         nodePiece.gameObject.SetActive(false);
-                        dead.Add(nodePiece);
+                        dead.Add(nodePiece); //add to dead and regen on top
                     }
                     node.SetPiece(null);
                 }
 
+               
+
             }
 
-            ApplyGravity();
+            ApplyGravity();   //Luc piece roi xuong se add vao update => kiem tra connect tai do
             flipped.Remove(flipMaster);
             update.Remove(piece);
         }
@@ -343,13 +429,8 @@ public class Match3 : MonoBehaviour
                             newPiece.rect.anchoredPosition = getPostionFromPoint(new Point(x, -1));  //Tinh tu diem ban dau ngoai vung bien
                             node.SetPiece(newPiece);
                             update.Add(newPiece);
-
-
                         }
-
-
                     }
-
                     break;
                 }
             }
@@ -481,6 +562,7 @@ public class Match3 : MonoBehaviour
         return board[p.x, p.y].value;
     }
 
+    int ad = 0;
     int fillPice()
     {
         int val = 1;

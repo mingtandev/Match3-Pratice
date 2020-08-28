@@ -57,34 +57,80 @@ public class Point
             return new Point(p.x + o.x, p.y + o.y);
         }
 
-    public static Point Clone(Point p)
+        public static Point Clone(Point p)
+        {
+            return new Point(p.x, p.y);
+        }
+
+        public static Point zero
+        {
+            get { return new Point(0, 0); }
+        }
+        public static Point one
+        {
+            get { return new Point(1, 1); }
+        }
+        public static Point up
+        {
+            get { return new Point(0, 1); }
+        }
+        public static Point down
+        {
+            get { return new Point(0, -1); }
+        }
+        public static Point right
+        {
+            get { return new Point(1, 0); }
+        }
+        public static Point left
+        {
+            get { return new Point(-1, 0); }
+        }
+
+        public static bool DirectOfListPoint(List<Point> list)   //true : horizontal , false : vertical
+        {
+            int count = list.Count;
+            for(int i = 0; i < count-1; i++)
+            {
+                if (list[i].y != list[i + 1].y)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    public static Point PHightest(List<Point> list)
     {
-        return new Point(p.x, p.y);
+        Point temp = Point.zero;
+        if (!Point.DirectOfListPoint(list))
+        {
+            for (int i = 0; i < list.Count ; i++)
+            {
+                if (list[i].y > temp.y)
+                {
+                    temp = Point.Clone(list[i]);
+                }
+            }
+        }
+
+        return temp;
     }
 
-    public static Point zero
+    public static Point PMostRight(List<Point> list)
     {
-        get { return new Point(0, 0); }
-    }
-    public static Point one
-    {
-        get { return new Point(1, 1); }
-    }
-    public static Point up
-    {
-        get { return new Point(0, 1); }
-    }
-    public static Point down
-    {
-        get { return new Point(0, -1); }
-    }
-    public static Point right
-    {
-        get { return new Point(1, 0); }
-    }
-    public static Point left
-    {
-        get { return new Point(-1, 0); }
+        Point temp = Point.zero;
+        if (Point.DirectOfListPoint(list))
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].x > temp.x)
+                {
+                    temp = Point.Clone(list[i]);
+                }
+            }
+        }
+
+        return temp;
     }
 }
 
