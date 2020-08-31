@@ -13,8 +13,14 @@ public class Match3 : MonoBehaviour
     [Header("UI Element")]
     public Node[,] board;
 
+    //calc distance each other object
     int width = 9;
     int height = 14;
+    int kc = 32;
+    public static int widthObj;
+    public static int heighObj;
+    Canvas myCanvas;
+    public static int canvas_width, canvas_heigh;
     public ArrayLayout boardLayout;
 
     public Sprite[] pieces;
@@ -24,6 +30,7 @@ public class Match3 : MonoBehaviour
     public RectTransform gameBoardTitles;
     public RectTransform explosionBoard;
     public Sprite[] boardTitles;
+    public Sprite[] blockAndEnemy;
 
     [Header("Prefabs")]
     public GameObject nodePiece;
@@ -35,8 +42,37 @@ public class Match3 : MonoBehaviour
     List<FlippedPices> flipped;
     List<NodePiece> dead;
 
+    bool isRandomBomb = false;
+    int continueConnect = 0;
+    Score gScore;
+
+
+
+    //Level design 
+    public int curLevel;
+    public int requireScore;
+    public int star;
+    public int movement;
+
+    private void Awake()
+    {
+        curLevel = 2;
+        requireScore = 1500 * curLevel;
+        movement = 20;
+    }
+
     void Start()
     {
+        myCanvas = GameObject.FindGameObjectWithTag("myCanvas").GetComponent<Canvas>();
+        canvas_width = Mathf.CeilToInt(myCanvas.GetComponent<RectTransform>().sizeDelta.x - 16 * 2);  //sub margin
+        canvas_heigh = Mathf.CeilToInt(myCanvas.GetComponent<RectTransform>().sizeDelta.y - 96 * 2);
+
+        widthObj = Mathf.CeilToInt((float)canvas_width / width);
+        heighObj = Mathf.CeilToInt((float)canvas_heigh / height);
+
+        nodePiece.GetComponent<RectTransform>().sizeDelta = new Vector2(widthObj, heighObj);
+
+        gScore = GameObject.FindObjectOfType<Score>();
 
         StartGame();
     }
@@ -61,7 +97,8 @@ public class Match3 : MonoBehaviour
         for(int i = 0; i < update.Count; i++)
         {
             //change sprite wakeup
-            update[i].GetComponent<Image>().sprite = piecesWakeUp[update[i].value - 1];
+            if (update[i].value <= 5)  //not bomb
+                update[i].GetComponent<Image>().sprite = piecesWakeUp[update[i].value - 1];
 
             NodePiece piece = update[i];
             bool updating = piece.UpdatePiece();
@@ -69,9 +106,11 @@ public class Match3 : MonoBehaviour
             {
                 finishedUpdating.Add(update[i]);
                 //Reset Sprite To Sleep
-                update[i].GetComponent<Image>().sprite = pieces[update[i].value - 1];
+                if(update[i].value<=5)  //not bomb
+                    update[i].GetComponent<Image>().sprite = pieces[update[i].value - 1];
             }
         }
+
         //Khi update xong , đã có vị trí mới , loop dưới đây xử lý những piece đã update xong
         for (int i = 0; i < finishedUpdating.Count; i++)
         {
@@ -89,6 +128,19 @@ public class Match3 : MonoBehaviour
             List<Point> connected = isConnected(piece.index, true);
 
             bool isFlipped = (flipMaster != null);
+
+            //check one of them have bomb
+            Point PointBom = Point.zero;
+            if (finishedUpdating[i].value == 6 && isFlipped)  // 6 is bomb
+            {
+                AddPoints(ref connected, connectBomb(finishedUpdating[i].index));
+                //Create fx at this point
+                GameObject longFX = InstaniateExpolsion(finishedUpdating[i].index.x, finishedUpdating[i].index.y, 8);
+                RectTransform rectLong;
+                rectLong = longFX.GetComponent<RectTransform>();
+                rectLong.anchoredPosition = new Vector2((rectLong.anchoredPosition.x + 16) + 150, rectLong.anchoredPosition.y);
+                rectLong.sizeDelta = new Vector2((6) * 50f, rectLong.sizeDelta.y);
+            }
 
             //Initilize FX effect
             //First : check at connect 1
@@ -112,6 +164,8 @@ public class Match3 : MonoBehaviour
                 isHorizontal_2 = Point.DirectOfListPoint(connected2);
 
                 AddPoints(ref connected, connected2);
+                if(connected.Count!=0)
+                    movement--;  //khi flip phai tru di movement
             }
 
             if (connected.Count == 0)  //Neu khong co match nao
@@ -124,8 +178,7 @@ public class Match3 : MonoBehaviour
             }
             else  // >0 ( =2  , =3 , ... )
             {
-
-                Debug.Log(Pconnect_1_H.x);
+                continueConnect++;
                 //_____________________________CREATE FX__________________________________-
                 bool isGreate4 = (connected.Count >= 4) ? true : false;
                 //Create FX if greate 5 pieces
@@ -175,14 +228,14 @@ public class Match3 : MonoBehaviour
                     }
                     isGreate5_2 = 0;
                 }
-
                 //_________________________kill all piece connected____________________________
                 foreach (Point pnt in connected)
                 {
                     Node node = getNodeAtPoint(pnt);
                     NodePiece nodePiece = node.getPiece();
 
-
+                    Score.instance.score += 10;
+                    
 
 
                     #region explosion effect
@@ -216,7 +269,22 @@ public class Match3 : MonoBehaviour
 
             ApplyGravity();   //Luc piece roi xuong se add vao update => kiem tra connect tai do
             flipped.Remove(flipMaster);
+
+            
+
             update.Remove(piece);
+
+            
+        }
+
+        if(update.Count==0)  //end update
+        {
+
+            if (continueConnect >= 5)
+            {
+                randomBomb();
+                continueConnect = 0;
+            }
         }
     }
 
@@ -224,13 +292,14 @@ public class Match3 : MonoBehaviour
     void RenderBoardTitle()
     {
         int k = 0;
+        BoardTitle.GetComponent<RectTransform>().sizeDelta = new Vector2(widthObj, heighObj);
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
                 GameObject p = Instantiate(BoardTitle, gameBoardTitles);
                 RectTransform rect = p.GetComponent<RectTransform>();
-                rect.anchoredPosition = new Vector2(32 + (64 * x), -32 - (64 * y));
+                rect.anchoredPosition = new Vector2(widthObj/2 + (widthObj * x), -heighObj/2 - (heighObj* y));
 
                 if (k % 2 == 0)
                     p.GetComponent<Image>().sprite = boardTitles[0];
@@ -366,12 +435,22 @@ public class Match3 : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 int val = board[x, y].value;
-                if (val <= 0) continue;
+                if (val <= 0)
+                {
+                    GameObject block = Instantiate(nodePiece, gameBoard);
+                    RectTransform brect = block.GetComponent<RectTransform>();
+
+                    
+                    brect.anchoredPosition = new Vector2(widthObj / 2 + (widthObj * x), -heighObj / 2 - (heighObj * y));
+                    block.GetComponent<Image>().sprite = blockAndEnemy[0]; //brick
+
+                    continue;
+                };
                 Node node = getNodeAtPoint(new Point(x, y));
                 GameObject p = Instantiate(nodePiece, gameBoard);
                 RectTransform rect = p.GetComponent<RectTransform>();
-                rect.anchoredPosition = new Vector2(32 + (64 * x), -32 - (64 * y));
-
+                rect.anchoredPosition = new Vector2(widthObj/2 + (widthObj* x), -heighObj/2- (heighObj* y));
+                rect.localScale = new Vector2(0.9f, 0.9f);
                 //Component node quản lý giá trị tại mỗi node ( value ,index , spirte , ...)
                 NodePiece piece = p.GetComponent<NodePiece>();
 
@@ -499,6 +578,65 @@ public class Match3 : MonoBehaviour
         return connected;
     }
 
+
+    void randomBomb() 
+    {
+        int randomWidth = random.Next(0, width);
+        int randomHeigh = random.Next(0, height);
+
+        while(boardLayout.rows[randomHeigh].row[randomWidth]==true)
+        {
+             randomWidth = random.Next(0, width);
+             randomHeigh = random.Next(0, height);
+        }
+
+        GameObject circleFX = InstaniateExpolsion(randomWidth, randomHeigh, 6);
+        
+        Node newN = board[randomWidth, randomHeigh];
+        newN.value = 6;
+        NodePiece piece = newN.getPiece();
+        if(piece!=null)
+            piece.Initialize(6, new Point(randomWidth, randomHeigh), pieces[5]);
+
+    }
+
+    List<Point> connectBomb(Point p)
+    {
+        
+        List<Point> connected = new List<Point>();
+        Point[] direction =
+        {
+            Point.up,
+            Point.right,
+            Point.down,
+            Point.left
+        };
+        foreach (Point dir in direction)
+        {
+            for (int i = 1; i < 3; i++)
+            {
+                Point check = Point.add(p, Point.mult(dir, i));
+                if (getValueAtPoint(check)>0)
+                {
+                        connected.Add(check);
+                }
+            }
+        }
+
+
+        //for(int i = 0; i <connected.Count; i++)
+        //{
+        //    if (getValueAtPoint(connected[i]) == 6)
+        //    {
+        //        AddPoints(ref connected, connectBomb(connected[i]));
+        //    }
+        //}
+
+        connected.Add(p);
+
+        return connected;
+    }
+
     GameObject InstaniateExpolsion(int x , int y , int val)
     {
         GameObject exp = Instantiate(explosion[val - 1], explosionBoard);
@@ -566,13 +704,19 @@ public class Match3 : MonoBehaviour
     int fillPice()
     {
         int val = 1;
-        val = (random.Next(0, 100) / (100 / pieces.Length)) + 1;
-        return val;
+        int[] a = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 , 
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            4, 4, 4, 4, 4, 4, 4, 4, 4,4, 4, 4, 4, 4, 4, 4, 4, 4,
+            5, 5, 5, 5, 5, 5, 5, 5, 5, 5,5, 5, 5, 5, 5, 5, 5, 5, 5, 6,
+            6};
+
+        return a[random.Next(0,a.Length)];
     }
 
     public Vector2 getPostionFromPoint(Point p)
     {
-        return new Vector2(32 + (64 * p.x), -32 - (64 * p.y));
+        return new Vector2(widthObj / 2 + (widthObj * p.x), -heighObj / 2 - (heighObj * p.y));
     }
 
     public void ResetPiece(NodePiece piece)
@@ -594,7 +738,7 @@ public class Match3 : MonoBehaviour
 [System.Serializable]
 public class Node
 {
-    public int value; // 0 : blank , 1 : green , 2 : orange , 3 : purple, 4 : red , 5 : yellow, -1 : hole
+    public int value; // 0 : blank , 1 : green , 2 : orange , 3 : purple, 4 : red , 5 : yellow, -1 : hole 6 : bomb
     public Point index;
     NodePiece piece;
     public Node(int v , Point i)

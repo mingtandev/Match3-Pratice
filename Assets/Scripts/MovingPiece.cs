@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 
 public class MovingPiece : MonoBehaviour
@@ -13,6 +14,8 @@ public class MovingPiece : MonoBehaviour
     Point newIndex;
     Vector2 mouseStart;
 
+    TextMeshProUGUI mov;
+
     private void Awake()
     {
         instance = this;
@@ -20,12 +23,14 @@ public class MovingPiece : MonoBehaviour
     void Start()
     {
         game = GetComponent<Match3>();
+        mov = GameObject.FindGameObjectWithTag("text_movement").GetComponent<TextMeshProUGUI>();
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        mov.text = game.movement.ToString();
         if (moving != null)  //if we need to moving
         {
             Vector2 dir = (Vector2)Input.mousePosition - mouseStart;

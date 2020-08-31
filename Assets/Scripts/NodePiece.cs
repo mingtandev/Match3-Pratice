@@ -5,6 +5,7 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Text.RegularExpressions;
+using System;
 
 public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
 {
@@ -46,7 +47,7 @@ public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
 
     public void ResetPosition()
     {
-        pos = new Vector2(32 + (64 * index.x), -32 - (64 * index.y));
+        pos = new Vector2(Match3.widthObj/2 + (Match3.widthObj * index.x), -Match3.heighObj/2- (Match3.heighObj* index.y));
     }
 
     public void SetIndex(Point p)
@@ -82,7 +83,9 @@ public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         if (updating) return;
-        gameObject.GetComponent<Image>().sprite = FindObjectOfType<Match3>().piecesWakeUp[value - 1];
+
+        if(value<=5)
+            gameObject.GetComponent<Image>().sprite = FindObjectOfType<Match3>().piecesWakeUp[value - 1];
         MovingPiece.instance.MovePiece(this);
     }
 
