@@ -6,6 +6,7 @@ TagManager:
   tags:
   - myCanvas
   - text_movement
+  - popup_complete
   layers:
   - Default
   - TransparentFX

@@ -48,7 +48,7 @@ public class ScoreCheck : MonoBehaviour
         if (ratio == 1)
         {
             star3.GetComponent<Image>().sprite = starOn;
-            curStar = 1;
+            curStar = 3;
         }
         else if (ratio >= 0.7f)
         {
@@ -59,8 +59,9 @@ public class ScoreCheck : MonoBehaviour
         {
 
             star1.GetComponent<Image>().sprite = starOn;
-            curStar = 3;
+            curStar = 1;
         }
 
+        game.star = curStar;
     }
 }

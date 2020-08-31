@@ -84,7 +84,7 @@ public class NodePiece : MonoBehaviour , IPointerDownHandler, IPointerUpHandler
     {
         if (updating) return;
 
-        if(value<=5)
+        if(value<=5 && value>=0)
             gameObject.GetComponent<Image>().sprite = FindObjectOfType<Match3>().piecesWakeUp[value - 1];
         MovingPiece.instance.MovePiece(this);
     }

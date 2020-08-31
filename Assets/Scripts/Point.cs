@@ -13,6 +13,8 @@ public class Point
             y = ny;
         }
 
+            
+
         public void mult(int m)
         {
             x *= m;

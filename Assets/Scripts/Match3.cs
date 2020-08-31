@@ -21,8 +21,7 @@ public class Match3 : MonoBehaviour
     public static int heighObj;
     Canvas myCanvas;
     public static int canvas_width, canvas_heigh;
-    public ArrayLayout boardLayout;
-
+    public bool[,] map;
     public Sprite[] pieces;
 
     public Sprite[] piecesWakeUp;
@@ -56,13 +55,15 @@ public class Match3 : MonoBehaviour
 
     private void Awake()
     {
-        curLevel = 2;
-        requireScore = 1500 * curLevel;
-        movement = 20;
+        //curLevel = 2;
+        //requireScore = 100 * curLevel;
+        //movement = 20;
     }
 
     void Start()
     {
+        curLevel = LoadLevel.chooseLevel;
+
         myCanvas = GameObject.FindGameObjectWithTag("myCanvas").GetComponent<Canvas>();
         canvas_width = Mathf.CeilToInt(myCanvas.GetComponent<RectTransform>().sizeDelta.x - 16 * 2);  //sub margin
         canvas_heigh = Mathf.CeilToInt(myCanvas.GetComponent<RectTransform>().sizeDelta.y - 96 * 2);
@@ -73,8 +74,10 @@ public class Match3 : MonoBehaviour
         nodePiece.GetComponent<RectTransform>().sizeDelta = new Vector2(widthObj, heighObj);
 
         gScore = GameObject.FindObjectOfType<Score>();
-
+        LevelManager.instance.LevelLoad(curLevel);
         StartGame();
+
+
     }
 
     void StartGame()
@@ -91,7 +94,6 @@ public class Match3 : MonoBehaviour
 
     void Update()
     {
-        
 
         List<NodePiece> finishedUpdating = new List<NodePiece>(); 
         for(int i = 0; i < update.Count; i++)
@@ -285,6 +287,12 @@ public class Match3 : MonoBehaviour
                 randomBomb();
                 continueConnect = 0;
             }
+
+            //end game
+            if (movement<=0) 
+            {
+                LevelManager.instance.Level_Complete(star,Score.instance.score);
+            }
         }
     }
 
@@ -398,7 +406,7 @@ public class Match3 : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                board[x, y] = new Node(boardLayout.rows[y].row[x] ? -1 : fillPice(), new Point(x, y));
+                board[x, y] = new Node(map[y,x] ? -1 : fillPice(), new Point(x, y));
             }
         }
     }
@@ -584,7 +592,7 @@ public class Match3 : MonoBehaviour
         int randomWidth = random.Next(0, width);
         int randomHeigh = random.Next(0, height);
 
-        while(boardLayout.rows[randomHeigh].row[randomWidth]==true)
+        while(map[randomHeigh,randomWidth]==true)
         {
              randomWidth = random.Next(0, width);
              randomHeigh = random.Next(0, height);
