@@ -889,7 +889,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 208310512}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1162555795}
+        m_MethodName: GoHome
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &208310512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1111,6 +1122,7 @@ MonoBehaviour:
   shadow: {fileID: 1334479659}
   starManager: {fileID: 1086789606}
   scoreObj: {fileID: 633572120}
+  currenLevel: 0
 --- !u!1 &283050009
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,7 +1203,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 283050012}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1162555795}
+        m_MethodName: RePlay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &283050012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2026,7 +2049,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 716415491}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1162555795}
+        m_MethodName: RePlay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &716415491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2075,6 +2109,7 @@ GameObject:
   - component: {fileID: 899123599}
   - component: {fileID: 899123601}
   - component: {fileID: 899123600}
+  - component: {fileID: 899123602}
   m_Layer: 5
   m_Name: status
   m_TagString: Untagged
@@ -2139,6 +2174,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899123598}
   m_CullTransparentMesh: 0
+--- !u!114 &899123602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 899123598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51414162810e2b04cba546102d434ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &982003535
 GameObject:
   m_ObjectHideFlags: 0
@@ -2753,6 +2800,7 @@ GameObject:
   - component: {fileID: 1162555793}
   - component: {fileID: 1162555792}
   - component: {fileID: 1162555791}
+  - component: {fileID: 1162555795}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: myCanvas
@@ -2843,6 +2891,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1162555795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162555790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788ff862407007240ac64c2e71e0ab21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1309732400
 GameObject:
   m_ObjectHideFlags: 0
@@ -3137,7 +3197,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1350134607}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1162555795}
+        m_MethodName: GoHome
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1350134607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3270,6 +3341,17 @@ MonoBehaviour:
       - m_Target: {fileID: 715214055}
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1162555795}
+        m_MethodName: NextLevel
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

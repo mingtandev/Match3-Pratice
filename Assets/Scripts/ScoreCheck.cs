@@ -22,6 +22,11 @@ public class ScoreCheck : MonoBehaviour
     GameObject star1;
     GameObject star2;
     GameObject star3;
+
+
+
+    //Popup manager
+
     private void Awake()
     {
         curStar = 0;
@@ -33,6 +38,8 @@ public class ScoreCheck : MonoBehaviour
         star2 = progress.transform.GetChild(2).gameObject;
         star3 = progress.transform.GetChild(3).gameObject;
 
+
+
     }
     private void Start()
     {
@@ -40,6 +47,8 @@ public class ScoreCheck : MonoBehaviour
     }
     void Update()
     {
+
+
         float ratio  = (float)gScore.score / requireScore;
         if (ratio > 1)
             ratio = 1;
@@ -62,6 +71,10 @@ public class ScoreCheck : MonoBehaviour
             curStar = 1;
         }
 
-        game.star = curStar;
+        if(curStar>= game.star)
+            game.star = curStar;
+
+
+
     }
 }

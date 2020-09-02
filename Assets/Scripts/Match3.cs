@@ -53,16 +53,15 @@ public class Match3 : MonoBehaviour
     public int star;
     public int movement;
 
-    private void Awake()
-    {
-        //curLevel = 2;
-        //requireScore = 100 * curLevel;
-        //movement = 20;
-    }
+
 
     void Start()
     {
+
         curLevel = LoadLevel.chooseLevel;
+
+        star = LoadLevel.star[curLevel];
+
 
         myCanvas = GameObject.FindGameObjectWithTag("myCanvas").GetComponent<Canvas>();
         canvas_width = Mathf.CeilToInt(myCanvas.GetComponent<RectTransform>().sizeDelta.x - 16 * 2);  //sub margin
@@ -80,7 +79,7 @@ public class Match3 : MonoBehaviour
 
     }
 
-    void StartGame()
+    public void StartGame()
     {
         RenderBoardTitle();
         random = new System.Random();
@@ -289,11 +288,16 @@ public class Match3 : MonoBehaviour
             }
 
             //end game
-            if (movement<=0) 
+            if (movement<=0 || Score.instance.score>=requireScore) 
             {
                 LevelManager.instance.Level_Complete(star,Score.instance.score);
             }
         }
+        //Debug.Log(LoadLevel.star[curLevel]);
+        if(LoadLevel.star[curLevel-1] < star)
+               LoadLevel.star[curLevel-1] = star;
+
+        
     }
 
 
@@ -631,14 +635,6 @@ public class Match3 : MonoBehaviour
             }
         }
 
-
-        //for(int i = 0; i <connected.Count; i++)
-        //{
-        //    if (getValueAtPoint(connected[i]) == 6)
-        //    {
-        //        AddPoints(ref connected, connectBomb(connected[i]));
-        //    }
-        //}
 
         connected.Add(p);
 
