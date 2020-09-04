@@ -35,8 +35,9 @@ public class UIGame : MonoBehaviour
 
         LoadLevel.chooseLevel++;
 
-        
 
+        if (LoadLevel.Level < LoadLevel.chooseLevel)
+            LoadLevel.Level = LoadLevel.chooseLevel;
 
         RePlay();
     }

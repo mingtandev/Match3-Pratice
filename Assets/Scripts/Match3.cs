@@ -53,7 +53,7 @@ public class Match3 : MonoBehaviour
     public int star;
     public int movement;
 
-
+    float curTime;
 
     void Start()
     {
@@ -89,6 +89,7 @@ public class Match3 : MonoBehaviour
         InitializeBoard();
         verifyBoard();
         InstantiateBoard();
+        curTime = Time.time;
     }
 
     void Update()
@@ -297,7 +298,14 @@ public class Match3 : MonoBehaviour
         if(LoadLevel.star[curLevel-1] < star)
                LoadLevel.star[curLevel-1] = star;
 
-        
+        if (Time.time - curTime > 1)
+        {
+            DataPlayer data = new DataPlayer(LoadLevel.Level, LoadLevel.star);
+            SaveLoadManager.SaveData(data);
+            curTime = Time.time;
+            
+        }
+
     }
 
 

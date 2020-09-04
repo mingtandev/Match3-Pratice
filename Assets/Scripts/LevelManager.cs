@@ -30,7 +30,7 @@ public class LevelManager : MonoBehaviour
     }
     public void Level_1()
     {
-        int requireScore = 100;
+        int requireScore = 1000;
         int movement = 20;
 
         game.requireScore = requireScore;
@@ -58,7 +58,7 @@ public class LevelManager : MonoBehaviour
 
     public void Level_2()
     {
-        int requireScore = 200;
+        int requireScore = 1500;
         int movement = 20;
 
         game.requireScore = requireScore;

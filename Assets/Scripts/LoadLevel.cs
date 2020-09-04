@@ -13,9 +13,10 @@ public class LoadLevel : MonoBehaviour
     private static LoadLevel instance;
 
     public static int[] star = new int[20];
-    public static int Level;
+    public static int Level = 1;
     public static int chooseLevel;
 
+    public static DataPlayer data;
     // Start is called before the first frame update
     //private void Awake()
     //{
@@ -36,6 +37,10 @@ public class LoadLevel : MonoBehaviour
     //        return;
     //    }
     //}
+    private void Awake()
+    {
+        data = SaveLoadManager.LoadData();
+    }
     void Start()
     {
             
@@ -53,11 +58,14 @@ public class LoadLevel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(data!=null)
+        {
+            Level = data.Lv;
+            star = data.star;
 
+        }
 
-
-        if (Level < chooseLevel)
-            Level = chooseLevel;
+        
 
 
         for (int i = 0; i < Level; i++)
@@ -74,5 +82,25 @@ public class LoadLevel : MonoBehaviour
     {
         chooseLevel = level;
         SceneManager.LoadScene(1);  
+    }
+}
+
+[System.Serializable]
+public class DataPlayer
+{
+    public int Lv;
+    public int[] star;
+
+    public DataPlayer(int l , int[] st)
+    {
+        star = new int[20];
+        Lv = l;
+        this.star = st;
+    }
+    public DataPlayer(DataPlayer b)
+    {
+        this.star = new int[20];
+        this.Lv = b.Lv;
+        this.star = b.star;
     }
 }
