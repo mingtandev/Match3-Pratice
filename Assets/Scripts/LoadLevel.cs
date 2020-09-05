@@ -17,26 +17,6 @@ public class LoadLevel : MonoBehaviour
     public static int chooseLevel;
 
     public static DataPlayer data;
-    // Start is called before the first frame update
-    //private void Awake()
-    //{
-
-    //    if (instance == null)
-    //    {
-    //        Debug.Log("Awake");
-    //        instance = this;
-    //        DontDestroyOnLoad(gameObject);
-    //        Level = 1;
-    //        star = new int[20];
-    //        star[0] = 0;
-    //        game = FindObjectOfType<Match3>();
-    //    }
-    //    else if (instance != this)
-    //    {
-    //        Destroy(this.gameObject);
-    //        return;
-    //    }
-    //}
     private void Awake()
     {
         data = SaveLoadManager.LoadData();

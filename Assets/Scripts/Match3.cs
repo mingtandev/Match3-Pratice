@@ -55,6 +55,11 @@ public class Match3 : MonoBehaviour
 
     float curTime;
 
+    private void Awake()
+    {
+     
+    }
+
     void Start()
     {
 
@@ -230,7 +235,17 @@ public class Match3 : MonoBehaviour
                     }
                     isGreate5_2 = 0;
                 }
+
+                //music:
+                if (connected.Count <= 3)
+                    SoundManager.instance.Play("match");
+                else if (connected.Count<=4)
+                    SoundManager.instance.Play("match4");
+                else
+                    SoundManager.instance.Play("bomb");
+
                 //_________________________kill all piece connected____________________________
+
                 foreach (Point pnt in connected)
                 {
                     Node node = getNodeAtPoint(pnt);

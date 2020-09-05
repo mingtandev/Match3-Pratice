@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4338968201060646598
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4338968201060646599}
+  - component: {fileID: 4338968201060646596}
+  m_Layer: 0
+  m_Name: SoundMaster
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4338968201060646599
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4338968201060646598}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 540, y: 1170, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4338968201060646596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4338968201060646598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc4664c069bdb5f4e8da3aeb57f6f6e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: home
+    clip: {fileID: 8300000, guid: 8e5e420dcfc112642ae5fe29323ae816, type: 3}
+    volume: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: click
+    clip: {fileID: 8300000, guid: 8bc700dabda936e439a4c96e72626776, type: 3}
+    volume: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bgGame
+    clip: {fileID: 8300000, guid: 78bde869f7d5c144c80006709c45d95c, type: 3}
+    volume: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: match
+    clip: {fileID: 8300000, guid: c71812dad378e0046a2a3dc97603e28f, type: 3}
+    volume: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: match4
+    clip: {fileID: 8300000, guid: 593acc1663ecdd64b95a43c9d447f442, type: 3}
+    volume: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: bomb
+    clip: {fileID: 8300000, guid: acf097ffb8809314eba805b7952d7d78, type: 3}
+    volume: 1
+    loop: 0
+    source: {fileID: 0}
