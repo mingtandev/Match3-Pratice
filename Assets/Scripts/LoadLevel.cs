@@ -13,7 +13,7 @@ public class LoadLevel : MonoBehaviour
     private static LoadLevel instance;
 
     public static int[] star = new int[20];
-    public static int Level;
+    public static int Level=1;
     public static int chooseLevel;
 
     public static DataPlayer data;
@@ -30,6 +30,8 @@ public class LoadLevel : MonoBehaviour
         {
             Level = data.Lv;
             star = data.star;
+            if(data.Lv==0)
+                Level=1;
         }
 
         
@@ -49,7 +51,8 @@ public class LoadLevel : MonoBehaviour
     {
         // if(data==null)
         //     Debug.Log("test");
-        if (level > Level && Level!=0)
+        
+        if (level > Level )
             return;
 
         chooseLevel = level;
