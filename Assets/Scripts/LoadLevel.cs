@@ -13,26 +13,14 @@ public class LoadLevel : MonoBehaviour
     private static LoadLevel instance;
 
     public static int[] star = new int[20];
-    public static int Level = 1;
+    public static int Level;
     public static int chooseLevel;
 
     public static DataPlayer data;
     private void Awake()
     {
-        data = SaveLoadManager.LoadData();
-    }
-    void Start()
-    {
-            
-            //for (int i = 0; i < Level; i++)
-            //{
-            //    gameObject.transform.GetChild(i).GetComponent<UnityEngine.UI.Image>().sprite = unlock[start[i]];
-            //    Text t = gameObject.transform.GetChild(i).gameObject.transform.GetChild(0).gameObject.GetComponent<Text>();
-            //    t.text = (i + 1).ToString();
-            //    t.color = Color.white;
-            //    t.fontSize = 36;
-            //}
 
+        data = SaveLoadManager.LoadData();
     }
 
     // Update is called once per frame
@@ -42,7 +30,6 @@ public class LoadLevel : MonoBehaviour
         {
             Level = data.Lv;
             star = data.star;
-
         }
 
         
@@ -60,6 +47,11 @@ public class LoadLevel : MonoBehaviour
 
     public void LoadToLevel(int level)
     {
+        // if(data==null)
+        //     Debug.Log("test");
+        if (level > Level && Level!=0)
+            return;
+
         chooseLevel = level;
         SceneManager.LoadScene(1);  
     }
@@ -70,17 +62,24 @@ public class DataPlayer
 {
     public int Lv;
     public int[] star;
+    public float volMusic = 1;
+    public float volSound = 1;
 
-    public DataPlayer(int l , int[] st)
+    public DataPlayer(int l , int[] st , float sound , float music)
     {
         star = new int[20];
         Lv = l;
         this.star = st;
+
+        volMusic = music;
+        volSound = sound;
     }
     public DataPlayer(DataPlayer b)
     {
         this.star = new int[20];
         this.Lv = b.Lv;
         this.star = b.star;
+        this.volMusic = b.volMusic;
+        this.volSound = b.volSound;
     }
 }

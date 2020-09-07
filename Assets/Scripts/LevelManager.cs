@@ -9,9 +9,9 @@ public class LevelManager : MonoBehaviour
 {
     // Start is called before the first frame update
 
-
+    
     public Match3 game;
-
+    
     //END GAME POPUP
     public Sprite starOn;
     public GameObject popupNexetLevel;

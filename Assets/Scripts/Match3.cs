@@ -55,10 +55,6 @@ public class Match3 : MonoBehaviour
 
     float curTime;
 
-    private void Awake()
-    {
-     
-    }
 
     void Start()
     {
@@ -315,7 +311,7 @@ public class Match3 : MonoBehaviour
 
         if (Time.time - curTime > 1)
         {
-            DataPlayer data = new DataPlayer(LoadLevel.Level, LoadLevel.star);
+            DataPlayer data = new DataPlayer(LoadLevel.Level, LoadLevel.star , SoundManager.volumeSound , SoundManager.volumeMusic);
             SaveLoadManager.SaveData(data);
             curTime = Time.time;
             
@@ -727,10 +723,8 @@ public class Match3 : MonoBehaviour
         return board[p.x, p.y].value;
     }
 
-    int ad = 0;
     int fillPice()
     {
-        int val = 1;
         int[] a = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 , 
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
